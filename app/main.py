@@ -112,21 +112,45 @@ def mostrar_registro():
     contraseña_placeholder = st.empty()
     correo_electronico_placeholder = st.empty()
     rfc_receptor_placeholder = st.empty()
-    domicilio_placeholder = st.empty()
+
+    with st.popover("Domicilio"):
+        calle_placeholder = st.empty()
+        numero_exterior_placeholder = st.empty()
+        numero_interior_placeholder = st.empty()
+        colonia_placeholder = st.empty()
+        municipio_placeholder = st.empty()
+        estado_placeholder = st.empty()
+        pais_placeholder = st.empty()
+        codigo_postal_placeholder = st.empty()
 
     # Crear campos de entrada para el nombre de usuario, la contraseña, el correo electrónico, el RFC y el domicilio
-    nombre_usuario = nombre_usuario_placeholder.text_input("Nombre de usuario").upper()
+    nombre_usuario = nombre_usuario_placeholder.text_input("Nombre completo").upper()
     contraseña = contraseña_placeholder.text_input("Contraseña", type='password', key="contraseña_registro")
     correo_electronico = correo_electronico_placeholder.text_input("Correo electrónico", key="correo_electronico_registro")
     rfc_receptor = rfc_receptor_placeholder.text_input("RFC").upper()
-    domicilio = domicilio_placeholder.text_input("Domicilio").upper()
+
+    # Crear campos de entrada para los detalles del domicilio
+    calle = calle_placeholder.text_input("Calle").upper()
+    numero_exterior = numero_exterior_placeholder.text_input("Número exterior").upper()
+    numero_interior = numero_interior_placeholder.text_input("Número interior (opcional)").upper()
+    colonia = colonia_placeholder.text_input("Colonia").upper()
+    municipio = municipio_placeholder.text_input("Municipio").upper()
+    estado = estado_placeholder.text_input("Estado").upper()
+    pais = pais_placeholder.text_input("País").upper()
+    codigo_postal = codigo_postal_placeholder.text_input("Código postal").upper()
+
+    # Unir los detalles del domicilio con ", " como separador
+    domicilio = ", ".join([calle, numero_exterior, numero_interior, colonia, codigo_postal, municipio, estado, pais])
 
     # Si el usuario hace clic en el botón "Finalizar registro"
     if st.button("Finalizar registro"):
         # Si todos los campos están llenos
-        if nombre_usuario and contraseña and correo_electronico and rfc_receptor and domicilio:
+        if nombre_usuario and contraseña and correo_electronico and rfc_receptor and calle and numero_exterior and colonia and codigo_postal and municipio and estado and pais:
+            # Si el usuario no ha ingresado al menos tres nombres, mostrar un mensaje de error
+            if len(nombre_usuario.split(' ')) < 3:
+                st.error("Debes ingresar tu nombre completo")
             # Si el RFC no tiene 13 caracteres, mostrar un mensaje de error
-            if len(rfc_receptor) != 13:
+            elif len(rfc_receptor) != 13:
                 st.error("El RFC debe tener exactamente 13 caracteres")
             # Si el correo electrónico no tiene una estructura válida, mostrar un mensaje de error
             elif not re.match(r"[^@]+@[^@]+\.[^@]+", correo_electronico):
@@ -157,7 +181,14 @@ def mostrar_registro():
                             contraseña_placeholder.empty()
                             correo_electronico_placeholder.empty()
                             rfc_receptor_placeholder.empty()
-                            domicilio_placeholder.empty()
+                            calle_placeholder = st.empty()
+                            numero_exterior_placeholder = st.empty()
+                            numero_interior_placeholder = st.empty()
+                            colonia_placeholder = st.empty()
+                            municipio_placeholder = st.empty()
+                            estado_placeholder = st.empty()
+                            pais_placeholder = st.empty()
+                            codigo_postal_placeholder = st.empty()
         else:
             # Si no todos los campos están llenos, mostrar un mensaje de error
             st.error("Todos los campos son obligatorios")
@@ -253,7 +284,7 @@ def generar_factura():
                 pdf_bytes = generar_pdf(datos_factura)
                 guardar_factura_pdf(db, id_factura, pdf_bytes)
                 
-                col1, col2, col3 = st.columns([3, 1, 1])
+                col1, col2, col3 = st.columns([3, 1.5, 2])
                 with col1:
                     # Mostrar un mensaje de éxito
                     st.success("Factura generada con éxito")

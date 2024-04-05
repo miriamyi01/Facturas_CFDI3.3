@@ -52,7 +52,6 @@ def obtener_datos(session, id_factura):
                 return Image.open(BytesIO(qr_bytes))
 
         return {
-            "id": factura.id,
             "nombre_empresa": factura.nombre_empresa,
             "uso_destino_cfdi_clave": factura.uso_destino_cfdi.clave,
             "uso_destino_cfdi_descripcion": factura.uso_destino_cfdi.descripcion,
