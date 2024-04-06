@@ -1,5 +1,5 @@
 # 💻 FACTURA CDFI 3.3
-Este proyecto es una aplicación web para generar facturas electrónicas (CFDI 3.0) de manera sencilla y eficiente. Está diseñada para pequeñas empresas, autónomos y freelancers que necesitan crear facturas de forma rápida y precisa.
+Este proyecto es una aplicación web para generar facturas electrónicas (CFDI 3.3) de manera sencilla y eficiente. Está diseñada para pequeñas empresas, autónomos y freelancers que necesitan crear facturas de forma rápida y precisa.
 
 
 ## 📌 Características principales
