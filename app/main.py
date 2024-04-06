@@ -33,7 +33,7 @@ def main():
     with st.container():
         col1, col2 = st.columns([6, 1])
         with col1:
-            st.title("FACTURAS CFDI 3.0")
+            st.title("FACTURAS CFDI 3.3")
             st.write("FARMACIAS DE DIOS")
         with col2:
             st.image("app/utils/logo.png", width=100)
@@ -92,10 +92,14 @@ def mostrar_inicio_sesión():
                     st.success("Has iniciado sesión correctamente")
                     # Refrescar la página para mostrar solo la pestaña de generar factura
                     st.experimental_rerun()
-                # Si el usuario no existe o la contraseña es incorrecta
+                # Si la contraseña es incorrecta
                 else:
                     # Mostrar un mensaje de error
                     st.error("El correo electrónico o la contraseña son incorrectos")
+            # Si el correo electrónico es incorrecto
+            else:
+                # Mostrar un mensaje de error
+                st.error("El correo electrónico o la contraseña son incorrectos")
 
 
 # Si el usuario selecciona "Registro"
@@ -119,9 +123,9 @@ def mostrar_registro():
         numero_interior_placeholder = st.empty()
         colonia_placeholder = st.empty()
         municipio_placeholder = st.empty()
+        codigo_postal_placeholder = st.empty()
         estado_placeholder = st.empty()
         pais_placeholder = st.empty()
-        codigo_postal_placeholder = st.empty()
 
     # Crear campos de entrada para el nombre de usuario, la contraseña, el correo electrónico, el RFC y el domicilio
     nombre_usuario = nombre_usuario_placeholder.text_input("Nombre completo").upper()
@@ -135,12 +139,12 @@ def mostrar_registro():
     numero_interior = numero_interior_placeholder.text_input("Número interior (opcional)").upper()
     colonia = colonia_placeholder.text_input("Colonia").upper()
     municipio = municipio_placeholder.text_input("Municipio").upper()
+    codigo_postal = codigo_postal_placeholder.text_input("Código postal").upper()
     estado = estado_placeholder.text_input("Estado").upper()
     pais = pais_placeholder.text_input("País").upper()
-    codigo_postal = codigo_postal_placeholder.text_input("Código postal").upper()
 
     # Unir los detalles del domicilio con ", " como separador
-    domicilio = ", ".join([calle, numero_exterior, numero_interior, colonia, codigo_postal, municipio, estado, pais])
+    domicilio = ", ".join([calle, numero_exterior, numero_interior, colonia, municipio, codigo_postal, estado, pais])
 
     # Si el usuario hace clic en el botón "Finalizar registro"
     if st.button("Finalizar registro"):
@@ -148,7 +152,7 @@ def mostrar_registro():
         if nombre_usuario and contraseña and correo_electronico and rfc_receptor and calle and numero_exterior and colonia and codigo_postal and municipio and estado and pais:
             # Si el usuario no ha ingresado al menos tres nombres, mostrar un mensaje de error
             if len(nombre_usuario.split(' ')) < 3:
-                st.error("Debes ingresar tu nombre completo")
+                st.error("Ingresa tu nombre completo")
             # Si el RFC no tiene 13 caracteres, mostrar un mensaje de error
             elif len(rfc_receptor) != 13:
                 st.error("El RFC debe tener exactamente 13 caracteres")
@@ -186,9 +190,9 @@ def mostrar_registro():
                             numero_interior_placeholder = st.empty()
                             colonia_placeholder = st.empty()
                             municipio_placeholder = st.empty()
+                            codigo_postal_placeholder = st.empty()
                             estado_placeholder = st.empty()
                             pais_placeholder = st.empty()
-                            codigo_postal_placeholder = st.empty()
         else:
             # Si no todos los campos están llenos, mostrar un mensaje de error
             st.error("Todos los campos son obligatorios")
