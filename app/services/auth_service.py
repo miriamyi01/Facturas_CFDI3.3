@@ -35,7 +35,7 @@ def get_db():
         db.close()
 
 # Esta función se utiliza para registrar un nuevo usuario en la base de datos
-def registrar_usuario(db: Session, nombre_usuario: str, contraseña: str, correo_electronico: str, rfc_receptor: str, domicilio: str):
+def registrar_usuario(db: Session, nombre_usuario: str, contraseña: str, correo_electronico: str, rfc_receptor: str, domicilio: str, es_empleado: bool = False):
     """
     Registra un nuevo usuario en la base de datos.
 
@@ -46,6 +46,7 @@ def registrar_usuario(db: Session, nombre_usuario: str, contraseña: str, correo
         correo_electronico (str): El correo electrónico del nuevo usuario.
         rfc_receptor (str): El RFC del nuevo usuario.
         domicilio (str): El domicilio del nuevo usuario.
+        es_empleado (bool): Indica si el usuario es un empleado.
 
     Returns:
         Usuario: El objeto de usuario recién registrado o un mensaje de error si el correo electrónico o el RFC ya están en uso.
@@ -59,7 +60,7 @@ def registrar_usuario(db: Session, nombre_usuario: str, contraseña: str, correo
             return "El RFC ya está en uso."
     # Si el correo electrónico y el RFC no están en uso, procedemos a registrar al usuario
     contraseña_hash = generate_password_hash(contraseña)
-    usuario = Usuario(nombre_usuario=nombre_usuario, contraseña_hash=contraseña_hash, correo_electronico=correo_electronico, rfc_receptor=rfc_receptor, domicilio=domicilio)
+    usuario = Usuario(nombre_usuario=nombre_usuario, contraseña_hash=contraseña_hash, correo_electronico=correo_electronico, rfc_receptor=rfc_receptor, domicilio=domicilio, es_empleado=es_empleado)
     db.add(usuario)
     db.commit()
     db.refresh(usuario)

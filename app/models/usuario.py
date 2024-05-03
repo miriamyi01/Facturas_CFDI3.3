@@ -4,7 +4,7 @@
 Este archivo define la clase Usuario, que representa a los usuarios en la base de datos.
 """
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 
 # Crear una clase base declarativa de SQLAlchemy
@@ -22,6 +22,7 @@ class Usuario(Base):
         correo_electronico (str): El correo electrónico del usuario.
         rfc_receptor (str): El RFC del receptor del usuario.
         domicilio (str): El domicilio del usuario.
+        es_empleado (bool): Indica si el usuario es un empleado.
     """
     # El nombre de la tabla en la base de datos
     __tablename__ = 'usuarios'
@@ -34,3 +35,4 @@ class Usuario(Base):
     correo_electronico = Column(String(255), unique=True, nullable=False)  # La columna correo_electronico debe ser única y no puede ser nula
     rfc_receptor = Column(String(20), unique=True, nullable=False)  # La columna rfc_receptor debe ser única, no puede ser nula y debe tener exactamente 13 caracteres
     domicilio = Column(String(255), nullable=False)  # La columna domicilio no puede ser nula
+    es_empleado = Column(Boolean, default=False)  # La columna es_empleado es un booleano y su valor por defecto es False

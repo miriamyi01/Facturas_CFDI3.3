@@ -40,8 +40,19 @@ def main():
 
     # Si el usuario ha iniciado sesión
     if "usuario" in st.session_state:
+        col1, col2 = st.columns([6, 1])
+        with col1:
+            # Agregar un botón para cerrar la sesión
+            if st.button("Cerrar sesión"):
+                # Eliminar "usuario" del st.session_state para cerrar la sesión
+                del st.session_state["usuario"]
+                # Redirigir al usuario a la pantalla de inicio
+                st.write("Has cerrado la sesión. Serás redirigido a la pantalla de inicio.")
+                st.redirect("http://localhost:8501/")
+
         # Llamar a la función para generar la factura
         generar_factura()
+    
     else:
         # Crear dos pestañas, una para mostrar el inicio de sesión y otra para mostrar el registro
         col1, col2 = st.columns([1, 2])
@@ -51,7 +62,11 @@ def main():
                 with tab1:
                     mostrar_inicio_sesión()
                 with tab2:
-                    mostrar_registro()
+                    tab1, tab2 = st.tabs(["Cliente", "Empleado"])
+                    if tab1:
+                        mostrar_registro(es_empleado=False)
+                    elif tab2:
+                        mostrar_registro(es_empleado=True)
 
 # Si el usuario selecciona "Inicio de sesión"
 def mostrar_inicio_sesión():
@@ -103,14 +118,18 @@ def mostrar_inicio_sesión():
 
 
 # Si el usuario selecciona "Registro"
-def mostrar_registro():
+def mostrar_registro(es_empleado: bool = False):
     """
     Muestra el formulario de registro y realiza la validación de los campos ingresados.
+
+    Args:
+        es_empleado (bool): Indica si el usuario es un empleado.
 
     Returns:
         None
     """
     st.subheader("✍🏼 Registrarse")
+
     # Crear marcadores de posición para los campos de entrada
     nombre_usuario_placeholder = st.empty()
     contraseña_placeholder = st.empty()
@@ -172,7 +191,7 @@ def mostrar_registro():
                             st.error("El RFC ya está registrado.")
                     else:
                         # Registrar al usuario
-                        usuario = registrar_usuario(db, nombre_usuario, contraseña, correo_electronico, rfc_receptor, domicilio)
+                        usuario = registrar_usuario(db, nombre_usuario, contraseña, correo_electronico, rfc_receptor, domicilio, es_empleado)
                         # Si el registro fue exitoso
                         if isinstance(usuario, str):
                             # Mostrar un mensaje de error

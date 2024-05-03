@@ -6,6 +6,7 @@ CREATE TABLE usuarios (
     correo_electronico VARCHAR(255) UNIQUE NOT NULL,  -- Correo electrónico del usuario (único)
     rfc_receptor VARCHAR(20) UNIQUE NOT NULL,  -- RFC del receptor (único)
     domicilio VARCHAR(255) NOT NULL  -- Domicilio del usuario
+    es_empleado BOOLEAN NOT NULL DEFAULT FALSE;
 );
 
 -- Tabla para el inventario
