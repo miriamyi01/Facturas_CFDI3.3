@@ -13,6 +13,7 @@ from num2words import num2words
 from models import Factura, TipoComprobante, UsoDestinoCfdi, RegimenFiscal, MetodoPago, FormaPago, ProductoServicio
 from datetime import datetime
 
+
 # Crear un motor de base de datos
 # Aquí se establece la conexión con la base de datos PostgreSQL
 engine = create_engine('postgresql://postgres:root12345@localhost/cfdi_facturas')
@@ -214,7 +215,7 @@ def crear_factura(db, datos_factura):
 
     factura = Factura(
         uso_destino_cfdi_clave=clave_uso_destino_cfdi,
-        fecha_expedicion=datetime.now(),
+        fecha_expedicion = datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
         tipo_comprobante_clave=clave_tipo_comprobante,
         regimen_fiscal_clave=clave_regimen_fiscal,
         rfc_receptor=datos_factura['rfc_receptor'],

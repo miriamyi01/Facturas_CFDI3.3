@@ -97,6 +97,13 @@ def generar_pdf(datos):
     pdf.add_page()
     pdf.set_font("Arial", size=12)
 
+    # Diccionario de mapeo para los textos específicos
+    mapeo_texto = {
+        "nombre_empresa": "Empresa",
+        "uso_destino_cfdi_clave": "Clave Uso CFDI",
+        "uso_destino_cfdi_descripcion": "Descripción Uso CFDI",
+    }
+
     for key, value in datos.items():
         if key == 'codigo_qr':
             # Convertir la imagen PIL a bytes
@@ -109,9 +116,15 @@ def generar_pdf(datos):
                 f.write(img_byte_arr)
 
             # Agregar la imagen al PDF
-            pdf.image('temp.png')
+            pdf.image('temp.png', w=20, h=20)
         else:
-            pdf.cell(200, 10, txt=f"{key}: {value}", ln=True)
+            # Encabezado - Nombre y logotipo
+
+            # Cuerpo - Datos
+
+            # Final - Sellos
+            texto_completo = f"{mapeo_texto[key]}: {value}"
+            pdf.cell(200, 10, txt=texto_completo, ln=True)
 
     return pdf.output(dest='S').encode('latin1')
 
