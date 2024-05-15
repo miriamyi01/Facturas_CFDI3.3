@@ -1,3 +1,6 @@
+-- CÁTALOGOS: https://apisandbox.facturama.mx/ --
+-- NOMBRE: cfdi_facturas --
+
 ------------------------------------------------------------
 -------------------- BASE PARA FACTURAS --------------------
 -----------------------------------------------------------
@@ -208,7 +211,7 @@ INSERT INTO productos_servicios (clave_producto_servicio, unidad, descripcion, p
 -----------------------------------------------------------
 -- Tabla para el login de empleados
 CREATE TABLE empleados (
-    numero_empleado SERIAL PRIMARY KEY,  -- Identificador único para cada empleado
+    numero_empleado VARCHAR(18) NOT NULL UNIQUE PRIMARY KEY,  -- Identificador único para cada empleado
     curp VARCHAR(18) NOT NULL UNIQUE,  -- CURP del empleado
     nss VARCHAR(11) NOT NULL UNIQUE,  -- NSS del empleado
     fecha_ingreso DATE NOT NULL,  -- Fecha de ingreso del empleado
@@ -358,6 +361,11 @@ CREATE TABLE percepciones (
 );
 
 CREATE TABLE deducciones (
+    clave VARCHAR(3) PRIMARY KEY NOT NULL UNIQUE,  -- Clave del tipo de periodicidad (única)
+    descripcion VARCHAR(255) NOT NULL  -- Descripción del tipo de periodicidad
+);
+
+CREATE TABLE banco (
     clave VARCHAR(3) PRIMARY KEY NOT NULL UNIQUE,  -- Clave del tipo de periodicidad (única)
     descripcion VARCHAR(255) NOT NULL  -- Descripción del tipo de periodicidad
 );
@@ -535,6 +543,101 @@ INSERT INTO deducciones (clave, descripcion) VALUES
 ('106', 'AJUSTE A PAGOS QUE SE REALICEN A EXTRABAJADORES QUE OBTENGAN UNA JUBILACIÓN EN UNA SOLA EXHIBICIÓN DERIVADOS DE LA EJECUCIÓN DE UNA RESOLUCIÓN JUDICIAL O DE UN LAUDO EXENTOS'),
 ('107', 'AJUSTE AL SUBSIDIO CAUSADO');
 
+-- Tipo de banco
+INSERT INTO banco (clave, descripcion) VALUES
+('002', 'BANAMEX'),
+('006', 'BANCOMEXT'),
+('009', 'BANOBRAS'),
+('012', 'BBVA BANCOMER'),
+('014', 'SANTANDER'),
+('019', 'BANJERCITO'),
+('021', 'HSBC'),
+('030', 'BAJIO'),
+('032', 'IXE'),
+('036', 'INBURSA'),
+('037', 'INTERACCIONES'),
+('042', 'MIFEL'),
+('044', 'SCOTIABANK'),
+('058', 'BANREGIO'),
+('059', 'INVEX'),
+('060', 'BANSI'),
+('062', 'AFIRME'),
+('072', 'BANORTE'),
+('102', 'THE ROYAL BANK'),
+('103', 'AMERICAN EXPRESS'),
+('106', 'BAMSA'),
+('108', 'TOKYO'),
+('110', 'JP MORGAN'),
+('112', 'BMONEX'),
+('113', 'VE POR MAS'),
+('116', 'ING'),
+('124', 'DEUTSCHE'),
+('126', 'CREDIT SUISSE'),
+('127', 'AZTECA'),
+('128', 'AUTOFIN'),
+('129', 'BARCLAYS'),
+('130', 'COMPARTAMOS'),
+('131', 'BANCO FAMSA'),
+('132', 'BMULTIVA'),
+('133', 'ACTINVER'),
+('134', 'WAL-MART'),
+('135', 'NAFIN'),
+('136', 'INTERBANCO'),
+('137', 'BANCOPPEL'),
+('138', 'ABC CAPITAL'),
+('139', 'UBS BANK'),
+('140', 'CONSUBANCO'),
+('141', 'VOLKSWAGEN'),
+('143', 'CIBANCO'),
+('145', 'BBASE'),
+('166', 'BANSEFI'),
+('168', 'HIPOTECARIA FEDERAL'),
+('600', 'MONEXCB'),
+('601', 'GBM'),
+('602', 'MASARI'),
+('605', 'VALUE'),
+('606', 'ESTRUCTURADORES'),
+('607', 'TIBER'),
+('608', 'VECTOR'),
+('610', 'B&B'),
+('614', 'ACCIVAL'),
+('615', 'MERRILL LYNCH'),
+('616', 'FINAMEX'),
+('617', 'VALMEX'),
+('618', 'UNICA'),
+('619', 'MAPFRE'),
+('620', 'PROFUTURO'),
+('621', 'CB ACTINVER'),
+('622', 'OACTIN'),
+('623', 'SKANDIA'),
+('626', 'CBDEUTSCHE'),
+('627', 'ZURICH'),
+('628', 'ZURICHVI'),
+('629', 'SU CASITA'),
+('630', 'CB INTERCAM'),
+('631', 'CI BOLSA'),
+('632', 'BULLTICK CB'),
+('633', 'STERLING'),
+('634', 'FINCOMUN'),
+('636', 'HDI SEGUROS'),
+('637', 'ORDER'),
+('638', 'AKALA'),
+('640', 'CB JPMORGAN'),
+('642', 'REFORMA'),
+('646', 'STP'),
+('647', 'TELECOMM'),
+('648', 'EVERCORE'),
+('649', 'SKANDIA'),
+('651', 'SEGMTY'),
+('652', 'ASEA'),
+('653', 'KUSPIT'),
+('655', 'SOFIEXPRESS'),
+('656', 'UNAGRA'),
+('659', 'OPCIONES EMPRESARIALES DEL NOROESTE'),
+('901', 'CLS'),
+('902', 'INDEVAL'),
+('670', 'LIBERTAD');
+
 
 -- Tabla principal para la creación de facturas
 CREATE TABLE recibos_nomina (
@@ -556,6 +659,7 @@ CREATE TABLE recibos_nomina (
     fecha_pago TIMESTAMP NOT NULL,  -- Fecha de pago
     metodo_pago_clave VARCHAR(3) NOT NULL REFERENCES metodos_pago(clave),  -- Clave del método de pago
     forma_pago_clave VARCHAR(2) NOT NULL REFERENCES formas_pago(clave),  -- Clave de la forma de pago
+    banco_clave VARCHAR(2) REFERENCES banco(clave),  -- Clave del banco
 
     -- Cuarta sección
     percepciones_recibo DECIMAL(10, 2) NOT NULL REFERENCES percepciones(clave),  -- Percepciones
