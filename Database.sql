@@ -12,8 +12,8 @@ CREATE TABLE usuarios (
     contraseña_hash VARCHAR(255) NOT NULL,  -- Contraseña hasheada
     correo_electronico VARCHAR(255) UNIQUE NOT NULL,  -- Correo electrónico del usuario (único)
     rfc_receptor VARCHAR(20) UNIQUE NOT NULL,  -- RFC del receptor (único)
-    domicilio VARCHAR(255) NOT NULL  -- Domicilio del usuario
-    es_empleado BOOLEAN NOT NULL DEFAULT FALSE;
+    domicilio VARCHAR(255) NOT NULL,  -- Domicilio del usuario
+    es_empleado BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 
@@ -110,7 +110,7 @@ INSERT INTO regimen_fiscal (clave, descripcion) VALUES
 ('630', 'ENAJENACIÓN DE ACCIONES EN BOLSA DE VALORES');
 
 -- Datos del tipo de comprobante
-INSERT INTO tipo_comprobantes (clave, descripcion) VALUES
+INSERT INTO tipo_comprobante (clave, descripcion) VALUES
 ('I', 'INGRESO'),
 ('E', 'EGRESO');
 
@@ -209,20 +209,6 @@ INSERT INTO productos_servicios (clave_producto_servicio, unidad, descripcion, p
 ------------------------------------------------------------
 --------------------- BASE PARA NÓMINA ---------------------
 -----------------------------------------------------------
--- Tabla para el login de empleados
-CREATE TABLE empleados (
-    numero_empleado VARCHAR(18) NOT NULL UNIQUE PRIMARY KEY,  -- Identificador único para cada empleado
-    curp VARCHAR(18) NOT NULL UNIQUE,  -- CURP del empleado
-    nss VARCHAR(11) NOT NULL UNIQUE,  -- NSS del empleado
-    fecha_ingreso DATE NOT NULL,  -- Fecha de ingreso del empleado
-    sueldo_base DECIMAL(10, 2) NOT NULL,  -- Sueldo base del empleado
-    puesto_id INT NOT NULL REFERENCES puesto(id),  -- ID del puesto del empleado
-    departamento_id INT NOT NULL REFERENCES departamento(id),  -- ID del departamento del empleado
-    riesgo_id INT NOT NULL REFERENCES riesgo(clave),  -- ID del riesgo del empleado
-    tipo_jornada VARCHAR(255) NOT NULL REFERENCES jornada(clave), -- Tipo de jornada del empleado
-    tipo_contrato VARCHAR(255) NOT NULL REFERENCES contrato(clave), -- Tipo de contrato del empleado
-    perioricidad_pago VARCHAR(255) NOT NULL REFERENCES perioricidad(clave) -- Perioricidad de pago del empleado
-);
 
 -- Tablas para la información del empleado
 CREATE TABLE departamento (
@@ -233,13 +219,13 @@ CREATE TABLE departamento (
 CREATE TABLE riesgo (
     clave VARCHAR(3) PRIMARY KEY NOT NULL UNIQUE,  -- Clave del tipo de riesgo (única)
     descripcion VARCHAR(255) NOT NULL  -- Descripción del tipo de riesgo
-)
+);
 
 CREATE TABLE puestos (
     id SERIAL PRIMARY KEY,  -- Identificador único para cada puesto
     nombre VARCHAR(255) NOT NULL,  -- Nombre del puesto
-    departamento_id INT NOT NULL,  -- ID del departamento al que pertenece el puesto
-    riesgo_clave INT NOT NULL,  -- ID del riesgo al que pertenece el puesto
+    departamento_id VARCHAR(255) NOT NULL,  -- ID del departamento al que pertenece el puesto
+    riesgo_clave VARCHAR(255) NOT NULL,  -- ID del riesgo al que pertenece el puesto
     FOREIGN KEY (departamento_id) REFERENCES departamento(id),  -- Relación con la tabla de departamentos
     FOREIGN KEY (riesgo_clave) REFERENCES riesgo(clave)  -- Relación con la tabla de riesgos
 );
@@ -247,23 +233,40 @@ CREATE TABLE puestos (
 CREATE TABLE jornada (
     clave VARCHAR(3) PRIMARY KEY NOT NULL UNIQUE,  -- Clave del tipo de jornada (única)
     descripcion VARCHAR(255) NOT NULL  -- Descripción del tipo de jornada
-)
+);
 
 CREATE TABLE contrato (
     clave VARCHAR(3) PRIMARY KEY NOT NULL UNIQUE,  -- Clave del tipo de contrato (única)
     descripcion VARCHAR(255) NOT NULL  -- Descripción del tipo de contrato
 );
 
-CREATE TABLE perioricidad (
+CREATE TABLE periodicidad (
     clave VARCHAR(3) PRIMARY KEY NOT NULL UNIQUE,  -- Clave del tipo de periodicidad (única)
     descripcion VARCHAR(255) NOT NULL  -- Descripción del tipo de periodicidad
 );
 
+
+-- Tabla para el login de empleados
+CREATE TABLE empleados (
+    numero_empleado VARCHAR(18) NOT NULL UNIQUE PRIMARY KEY,  -- Identificador único para cada empleado
+    curp VARCHAR(18) NOT NULL UNIQUE,  -- CURP del empleado
+    nss VARCHAR(11) NOT NULL UNIQUE,  -- NSS del empleado
+    fecha_ingreso DATE NOT NULL,  -- Fecha de ingreso del empleado
+    sueldo_base DECIMAL(10, 2) NOT NULL,  -- Sueldo base del empleado
+    puesto_id INT NOT NULL REFERENCES puestos(id),  -- ID del puesto del empleado
+    departamento_id VARCHAR(3) NOT NULL REFERENCES departamento(id),  -- ID del departamento del empleado
+    riesgo_id VARCHAR(3) NOT NULL REFERENCES riesgo(clave),  -- ID del riesgo del empleado
+    tipo_jornada VARCHAR(3) NOT NULL REFERENCES jornada(clave), -- Tipo de jornada del empleado
+    tipo_contrato VARCHAR(3) NOT NULL REFERENCES contrato(clave), -- Tipo de contrato del empleado
+    periodicidad_pago VARCHAR(3) NOT NULL REFERENCES periodicidad(clave) -- periodicidad de pago del empleado
+);
+
+
 -- Opciones usadas en el CFDI 3.3
--- Se insertan valores en las tablas de departamento, riesgo, puestos, jornada, contrato y perioricidad.
+-- Se insertan valores en las tablas de departamento, riesgo, puestos, jornada, contrato y periodicidad.
 -- Datos del empleado
 -- Ejemplos de departamentos
-INSERT INTO departamento (clave, nombre) VALUES
+INSERT INTO departamento (id, nombre) VALUES
 ('D1', 'RECURSOS HUMANOS'),
 ('D2', 'FINANZAS'),
 ('D3', 'MARKETING'),
@@ -285,7 +288,7 @@ INSERT INTO riesgo (clave, descripcion) VALUES
 ('99', 'NO APLICA');
 
 -- Ejemplos de 2 puestos específicos para cada departamento con riesgos asignados
-INSERT INTO puestos (nombre, departamento_id, riesgo_id) VALUES
+INSERT INTO puestos (nombre, departamento_id, riesgo_clave) VALUES
 ('DIRECTOR DE RECURSOS HUMANOS', 'D1', '01'),
 ('ESPECIALISTA EN RECLUTAMIENTO', 'D1', '02'),
 ('DIRECTOR FINANCIERO', 'D2', '03'),
@@ -639,7 +642,7 @@ INSERT INTO banco (clave, descripcion) VALUES
 ('670', 'LIBERTAD');
 
 
--- Tabla principal para la creación de facturas
+-- Tabla principal para la creación de recibos de nómina
 CREATE TABLE recibos_nomina (
     -- Encabezado
     id SERIAL PRIMARY KEY,  -- Identificador único para cada recibo
@@ -653,7 +656,7 @@ CREATE TABLE recibos_nomina (
     regimen_laboral_clave VARCHAR(3) NOT NULL REFERENCES regimen_laboral(clave),  -- Clave del régimen laboral
 
     -- Segunda sección
-    empleado INTEGER NOT NULL REFERENCES empleados(numero_empleado), -- Numero de empleado
+    empleado VARCHAR(10) NOT NULL REFERENCES empleados(numero_empleado), -- Numero de empleado
 
     -- Tercera sección
     fecha_pago TIMESTAMP NOT NULL,  -- Fecha de pago
@@ -662,11 +665,11 @@ CREATE TABLE recibos_nomina (
     banco_clave VARCHAR(2) REFERENCES banco(clave),  -- Clave del banco
 
     -- Cuarta sección
-    percepciones_recibo DECIMAL(10, 2) NOT NULL REFERENCES percepciones(clave),  -- Percepciones
+    percepciones_recibo VARCHAR(3) NOT NULL REFERENCES percepciones(clave),  -- Percepciones
     valor_percepciones DECIMAL(10, 2) NOT NULL,  -- Valor de percepciones
     total_percepciones DECIMAL(10, 2) NOT NULL, -- Total de percepciones
 
-    deducciones_recibo DECIMAL(10, 2) NOT NULL REFERENCES deducciones(clave),  -- Deducciones
+    deducciones_recibo VARCHAR(3) NOT NULL REFERENCES deducciones(clave),  -- Deducciones
     valor_deducciones DECIMAL(10, 2) NOT NULL,  -- Valor de deducciones
     total_deducciones DECIMAL(10, 2) NOT NULL, -- Total de deducciones
 
