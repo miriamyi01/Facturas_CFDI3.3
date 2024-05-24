@@ -1,4 +1,4 @@
-# utils/pdf_utils.py
+# utils/factura_pdf_utils.py
 
 """
 Este archivo proporciona funciones para generar y guardar archivos PDF de facturas.

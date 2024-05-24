@@ -651,6 +651,7 @@ CREATE TABLE recibos_nomina (
     -- Primera sección
     uso_destino_cfdi_clave VARCHAR(4) NOT NULL REFERENCES uso_destino_cfdi(clave),  -- Clave del uso o destino CFDI
     lugar_expedicion VARCHAR(20) DEFAULT 'CIUDAD DE MÉXICO' NOT NULL,  -- Lugar de expedición
+    fecha_expedicion TIMESTAMP NOT NULL,  -- Fecha de expedición
     rfc_emisor VARCHAR(20) DEFAULT 'FARA2402035H8' NOT NULL,  -- RFC del emisor
     tipo_comprobante_clave VARCHAR(1) NOT NULL REFERENCES tipo_comprobante(clave),  -- Clave del tipo de comprobante
     regimen_laboral_clave VARCHAR(3) NOT NULL REFERENCES regimen_laboral(clave),  -- Clave del régimen laboral

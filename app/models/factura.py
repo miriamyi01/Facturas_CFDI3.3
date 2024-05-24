@@ -19,21 +19,14 @@ class Usuario(Base):
     """
     __tablename__ = 'usuarios'
 
-    # Identificador único del usuario
-    id = Column(Integer, primary_key=True)
-    # Nombre del usuario
-    nombre_usuario = Column(String(255), nullable=False)
-    # Hash de la contraseña del usuario
-    contraseña_hash = Column(String(255), nullable=False)
-    # Correo electrónico del usuario
-    correo_electronico = Column(String(255), unique=True, nullable=False)
-    # RFC (Registro Federal de Contribuyentes) del receptor asociado al usuario
-    rfc_receptor = Column(String(13), unique=True, nullable=False)
-    # Domicilio del usuario
-    domicilio = Column(String(255), nullable=False)
+    id = Column(Integer, primary_key=True)  # Identificador único del usuario
+    nombre_usuario = Column(String(255), nullable=False)  # Nombre del usuario
+    contraseña_hash = Column(String(255), nullable=False)  # Hash de la contraseña del usuario
+    correo_electronico = Column(String(255), unique=True, nullable=False)  # Correo electrónico del usuario
+    rfc_receptor = Column(String(13), unique=True, nullable=False)  # RFC (Registro Federal de Contribuyentes) del receptor asociado al usuario
+    domicilio = Column(String(255), nullable=False)  # Domicilio del usuario
 
-    # Relación con la tabla Factura: un usuario puede tener múltiples facturas
-    facturas = relationship("Factura", back_populates="usuario")
+    facturas = relationship("Factura", back_populates="usuario")  # Relación con la tabla Factura: un usuario puede tener múltiples facturas
 
 class ProductoServicio(Base):
     """
@@ -41,17 +34,12 @@ class ProductoServicio(Base):
     """
     __tablename__ = 'productos_servicios'
 
-    # Clave única del producto o servicio
-    clave_producto_servicio = Column(String(10), primary_key=True, unique=True, nullable=False)
-    # Unidad del producto o servicio
-    unidad = Column(String(255), nullable=False)
-    # Descripción del producto o servicio
-    descripcion = Column(String(255), nullable=False)
-    # Precio unitario del producto o servicio
-    precio_unitario = Column(Float, nullable=False)
+    clave_producto_servicio = Column(String(10), primary_key=True, unique=True, nullable=False)  # Clave única del producto o servicio
+    unidad = Column(String(255), nullable=False)  # Unidad del producto o servicio
+    descripcion = Column(String(255), nullable=False)  # Descripción del producto o servicio
+    precio_unitario = Column(Float, nullable=False)  # Precio unitario del producto o servicio
 
-    # Relación con la tabla Factura: un producto o servicio puede estar asociado a múltiples facturas
-    facturas = relationship("Factura", back_populates="producto_servicio")
+    facturas = relationship("Factura", back_populates="producto_servicio")  # Relación con la tabla Factura: un producto o servicio puede estar asociado a múltiples facturas
 
 class TipoComprobante(Base):
     """
@@ -59,13 +47,10 @@ class TipoComprobante(Base):
     """
     __tablename__ = 'tipo_comprobante'
 
-    # Clave única del tipo de comprobante
-    clave = Column(String(1), primary_key=True, unique=True, nullable=False)
-    # Descripción del tipo de comprobante
-    descripcion = Column(String(255), nullable=False)
-
-    # Relación con la tabla Factura: un tipo de comprobante puede estar asociado a múltiples facturas
-    facturas = relationship("Factura", back_populates="tipo_comprobante")
+    clave = Column(String(1), primary_key=True, unique=True, nullable=False)  # Clave única del tipo de comprobante
+    descripcion = Column(String(255), nullable=False)  # Descripción del tipo de comprobante
+    
+    facturas = relationship("Factura", back_populates="tipo_comprobante")  # Relación con la tabla Factura: un tipo de comprobante puede estar asociado a múltiples facturas
 
 class UsoDestinoCfdi(Base):
     """
@@ -73,13 +58,10 @@ class UsoDestinoCfdi(Base):
     """
     __tablename__ = 'uso_destino_cfdi'
 
-    # Clave única del uso o destino de un CFDI
-    clave = Column(String(4), primary_key=True, unique=True, nullable=False)
-    # Descripción del uso o destino de un CFDI
-    descripcion = Column(String(255), nullable=False)
-
-    # Relación con la tabla Factura: un uso o destino de CFDI puede estar asociado a múltiples facturas
-    facturas = relationship("Factura", back_populates="uso_destino_cfdi")
+    clave = Column(String(4), primary_key=True, unique=True, nullable=False)  # Clave única del uso o destino de un CFDI
+    descripcion = Column(String(255), nullable=False)  # Descripción del uso o destino de un CFDI
+    
+    facturas = relationship("Factura", back_populates="uso_destino_cfdi")  # Relación con la tabla Factura: un uso o destino de CFDI puede estar asociado a múltiples facturas
 
 class RegimenFiscal(Base):
     """
@@ -87,13 +69,10 @@ class RegimenFiscal(Base):
     """
     __tablename__ = 'regimen_fiscal'
 
-    # Clave única del régimen fiscal
-    clave = Column(String(3), primary_key=True, unique=True, nullable=False)
-    # Descripción del régimen fiscal
-    descripcion = Column(String(255), nullable=False)
-
-    # Relación con la tabla Factura: un régimen fiscal puede estar asociado a múltiples facturas
-    facturas = relationship("Factura", back_populates="regimen_fiscal")
+    clave = Column(String(3), primary_key=True, unique=True, nullable=False)  # Clave única del régimen fiscal
+    descripcion = Column(String(255), nullable=False)  # Descripción del régimen fiscal
+    
+    facturas = relationship("Factura", back_populates="regimen_fiscal")  # Relación con la tabla Factura: un régimen fiscal puede estar asociado a múltiples facturas
 
 class MetodoPago(Base):
     """
@@ -101,13 +80,10 @@ class MetodoPago(Base):
     """
     __tablename__ = 'metodos_pago'
 
-    # Clave única del método de pago
-    clave = Column(String(3), primary_key=True, unique=True, nullable=False)
-    # Descripción del método de pago
-    descripcion = Column(String(255), nullable=False)
-
-    # Relación con la tabla Factura: un método de pago puede estar asociado a múltiples facturas
-    facturas = relationship("Factura", back_populates="metodo_pago")
+    clave = Column(String(3), primary_key=True, unique=True, nullable=False)  # Clave única del método de pago
+    descripcion = Column(String(255), nullable=False)  # Descripción del método de pago
+    
+    facturas = relationship("Factura", back_populates="metodo_pago")  # Relación con la tabla Factura: un método de pago puede estar asociado a múltiples facturas
 
 class FormaPago(Base):
     """
@@ -115,13 +91,10 @@ class FormaPago(Base):
     """
     __tablename__ = 'formas_pago'
 
-    # Clave única de la forma de pago
-    clave = Column(String(2), primary_key=True, unique=True, nullable=False)
-    # Descripción de la forma de pago
-    descripcion = Column(String(255), nullable=False)
-
-    # Relación con la tabla Factura: una forma de pago puede estar asociada a múltiples facturas
-    facturas = relationship("Factura", back_populates="forma_pago")
+    clave = Column(String(2), primary_key=True, unique=True, nullable=False)  # Clave única de la forma de pago
+    descripcion = Column(String(255), nullable=False)  # Descripción de la forma de pago
+    
+    facturas = relationship("Factura", back_populates="forma_pago")  # Relación con la tabla Factura: una forma de pago puede estar asociada a múltiples facturas
 
 class FacturaPDF(Base):
     """
@@ -129,15 +102,11 @@ class FacturaPDF(Base):
     """
     __tablename__ = "facturas_pdf"
 
-    # Identificador único del PDF de la factura
-    id = Column(Integer, primary_key=True, index=True)
-    # Identificador de la factura asociada al PDF
-    id_factura = Column(Integer, ForeignKey("facturas.id"))
-    # Contenido binario del PDF
-    pdf = Column(LargeBinary)
-
-    # Relación con la tabla Factura: un PDF de factura está asociado a una factura
-    factura = relationship("Factura", back_populates="facturas_pdf")
+    id = Column(Integer, primary_key=True, index=True)  # Identificador único del PDF de la factura
+    id_factura = Column(Integer, ForeignKey("facturas.id"))  # Identificador de la factura asociada al PDF
+    pdf = Column(LargeBinary)  # Contenido binario del PDF
+    
+    facturas = relationship("Factura", back_populates="facturas_pdf")  # Relación con la tabla Factura: un PDF de factura está asociado a una factura
 
 class Factura(Base):
     """
@@ -145,54 +114,30 @@ class Factura(Base):
     """
     __tablename__ = 'facturas'
 
-    # Identificador único de la factura
-    id = Column(Integer, primary_key=True)
-    # Nombre de la empresa emisora de la factura
-    nombre_empresa = Column(String(50), default='FARMACIAS DE DIOS', nullable=False)
-    # Clave del uso o destino del CFDI
-    uso_destino_cfdi_clave = Column(Integer, ForeignKey('uso_destino_cfdi.clave'), nullable=False)
-    # Lugar de expedición de la factura
-    lugar_expedicion = Column(String(20), default='CIUDAD DE MÉXICO', nullable=False)
-    # Fecha de expedición de la factura
-    fecha_expedicion = Column(DateTime, nullable=False)
-    # RFC del emisor de la factura
-    rfc_emisor = Column(String(20), default='FARA2402035H8', nullable=False)
-    # Clave del tipo de comprobante
-    tipo_comprobante_clave = Column(Integer, ForeignKey('tipo_comprobante.clave'), nullable=False)
-    # Clave del régimen fiscal del emisor
-    regimen_fiscal_clave = Column(Integer, ForeignKey('regimen_fiscal.clave'), nullable=False)
-    # RFC del receptor asociado a la factura
-    rfc_receptor = Column(String(20), ForeignKey('usuarios.rfc_receptor'), nullable=False)
-    # Clave del producto o servicio incluido en la factura
-    clave_producto_servicio = Column(String(10), ForeignKey('productos_servicios.clave_producto_servicio'), nullable=False)
-    # Cantidad de productos o servicios incluidos en la factura
-    cantidad = Column(Integer, nullable=False)
-    # Importe total de la factura
-    importe = Column(Float, nullable=False)
-    # Subtotal de la factura
-    subtotal = Column(Float, nullable=False)
-    # IVA (Impuesto al Valor Agregado) de la factura
-    iva = Column(Float, nullable=False)
-    # Total de la factura
-    total = Column(Float, nullable=False)
-    # Total en letra de la factura
-    total_con_letra = Column(String(255), nullable=False)
-    # Moneda en la que está expresada la factura
-    moneda = Column(String(20), default='MXN PESOS MEXICANOS', nullable=False)
-    # Tipo de cambio en caso de que la moneda sea distinta de pesos mexicanos
-    tipo_cambio = Column(Float, default=0.00, nullable=False)
-    # Clave del método de pago
-    metodo_pago_clave = Column(Integer, ForeignKey('metodos_pago.clave'), nullable=False)
-    # Clave de la forma de pago
-    forma_pago_clave = Column(Integer, ForeignKey('formas_pago.clave'), nullable=False)
-    # Sello digital del CFDI (Comprobante Fiscal Digital por Internet)
-    sello_digital_cfdi = Column(Text, nullable=False)
-    # Sello digital del SAT (Servicio de Administración Tributaria)
-    sello_digital_sat = Column(Text, nullable=False)
-    # Cadena original del complemento de certificación
-    cadena_original_complemento_certificacion = Column(Text, nullable=False)
-    # Código QR de la factura
-    codigo_qr = Column(String, nullable=False)
+    id = Column(Integer, primary_key=True)  # Identificador único de la factura
+    nombre_empresa = Column(String(50), default='FARMACIAS DE DIOS', nullable=False)  # Nombre de la empresa emisora de la factura
+    uso_destino_cfdi_clave = Column(Integer, ForeignKey('uso_destino_cfdi.clave'), nullable=False)  # Clave del uso o destino del CFDI
+    lugar_expedicion = Column(String(20), default='CIUDAD DE MÉXICO', nullable=False)  # Lugar de expedición de la factura
+    fecha_expedicion = Column(DateTime, nullable=False)  # Fecha de expedición de la factura
+    rfc_emisor = Column(String(20), default='FARA2402035H8', nullable=False)  # RFC del emisor de la factura
+    tipo_comprobante_clave = Column(Integer, ForeignKey('tipo_comprobante.clave'), nullable=False)  # Clave del tipo de comprobante
+    regimen_fiscal_clave = Column(Integer, ForeignKey('regimen_fiscal.clave'), nullable=False)  # Clave del régimen fiscal del emisor
+    rfc_receptor = Column(String(20), ForeignKey('usuarios.rfc_receptor'), nullable=False)  # RFC del receptor asociado a la factura
+    clave_producto_servicio = Column(String(10), ForeignKey('productos_servicios.clave_producto_servicio'), nullable=False)  # Clave del producto o servicio incluido en la factura
+    cantidad = Column(Integer, nullable=False)  # Cantidad de productos o servicios incluidos en la factura
+    importe = Column(Float, nullable=False)  # Importe total de la factura
+    subtotal = Column(Float, nullable=False)  # Subtotal de la factura
+    iva = Column(Float, nullable=False)  # IVA (Impuesto al Valor Agregado) de la factura
+    total = Column(Float, nullable=False)  # Total de la factura
+    total_con_letra = Column(String(255), nullable=False)  # Total en letra de la factura
+    moneda = Column(String(20), default='MXN PESOS MEXICANOS', nullable=False)  # Moneda en la que está expresada la factura
+    tipo_cambio = Column(Float, default=0.00, nullable=False)  # Tipo de cambio en caso de que la moneda sea distinta de pesos mexicanos
+    metodo_pago_clave = Column(Integer, ForeignKey('metodos_pago.clave'), nullable=False)  # Clave del método de pago
+    forma_pago_clave = Column(Integer, ForeignKey('formas_pago.clave'), nullable=False)  # Clave de la forma de pago
+    sello_digital_cfdi = Column(Text, nullable=False)  # Sello digital del CFDI (Comprobante Fiscal Digital por Internet)
+    sello_digital_sat = Column(Text, nullable=False)  # Sello digital del SAT (Servicio de Administración Tributaria)
+    cadena_original_complemento_certificacion = Column(Text, nullable=False)  # Cadena original del complemento de certificación
+    codigo_qr = Column(String, nullable=False)  # Código QR de la factura
 
     # Relaciones con otras tablas
     usuario = relationship("Usuario", back_populates="facturas")
@@ -202,4 +147,4 @@ class Factura(Base):
     regimen_fiscal = relationship("RegimenFiscal", back_populates="facturas")
     metodo_pago = relationship("MetodoPago", back_populates="facturas")
     forma_pago = relationship("FormaPago", back_populates="facturas")
-    facturas_pdf = relationship("FacturaPDF", back_populates="factura")
+    facturas_pdf = relationship("FacturaPDF", back_populates="facturas")
