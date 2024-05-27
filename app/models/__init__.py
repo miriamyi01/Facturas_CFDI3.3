@@ -28,7 +28,12 @@ from .factura import (
 # Importamos la clase Empleado del módulo empleado
 # Esta clase se utiliza para representar a un empleado en nuestra aplicación.
 from .empleado import Empleado (
-    
+    Puesto
+    Departamento
+    Riesgo
+    Jornada
+    Contrato
+    Periodicidad
 )
 
 # Importamos varias clases del módulo recibo
