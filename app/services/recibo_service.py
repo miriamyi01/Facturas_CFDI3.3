@@ -90,31 +90,31 @@ def obtener_empleado(db):
     empleados = db.query(Empleado).all()
 
 
-def obtener_tipo_comprobante(db):
-    """
-    Obtiene los tipos de comprobante disponibles en la base de datos.
+# def obtener_tipo_comprobante(db):
+#     """
+#     Obtiene los tipos de comprobante disponibles en la base de datos.
+#
+#     Args:
+#         db (Session): La sesión de la base de datos.
+#
+#     Returns:
+#         list: Una lista de cadenas con los tipos de comprobante disponibles.
+#     """
+#     tipos_comprobante = db.query(TipoComprobante).all()
+#     return [f"{tipos_comprobante.clave} - {tipos_comprobante.descripcion}" for tipos_comprobante in tipos_comprobante]
 
-    Args:
-        db (Session): La sesión de la base de datos.
-
-    Returns:
-        list: Una lista de cadenas con los tipos de comprobante disponibles.
-    """
-    tipos_comprobante = db.query(TipoComprobante).all()
-    return [f"{tipos_comprobante.clave} - {tipos_comprobante.descripcion}" for tipos_comprobante in tipos_comprobante]
-
-def obtener_uso_destino_cfdi(db):
-    """
-    Obtiene los usos o destinos de un CFDI disponibles en la base de datos.
-
-    Args:
-        db (Session): La sesión de la base de datos.
-
-    Returns:
-        list: Una lista de cadenas con los usos o destinos de un CFDI disponibles.
-    """
-    usos_destino_cfdi = db.query(UsoDestinoCfdi).all()
-    return [f"{uso_destino_cfdi.clave} - {uso_destino_cfdi.descripcion}" for uso_destino_cfdi in usos_destino_cfdi]
+# def obtener_uso_destino_cfdi(db):
+#     """
+#     Obtiene los usos o destinos de un CFDI disponibles en la base de datos.
+#
+#     Args:
+#         db (Session): La sesión de la base de datos.
+#
+#     Returns:
+#         list: Una lista de cadenas con los usos o destinos de un CFDI disponibles.
+#     """
+#     usos_destino_cfdi = db.query(UsoDestinoCfdi).all()
+#     return [f"{uso_destino_cfdi.clave} - {uso_destino_cfdi.descripcion}" for uso_destino_cfdi in usos_destino_cfdi]
 
 def obtener_regimen_laboral(db):
     """
@@ -129,31 +129,31 @@ def obtener_regimen_laboral(db):
     regimenes_laborales = db.query(RegimenLaboral).all()
     return [f"{regimen_laboral.clave} - {regimen_laboral.descripcion}" for regimen_laboral in regimenes_laborales]
 
-def obtener_metodos_pago(db):
-    """
-    Obtiene los métodos de pago disponibles en la base de datos.
+# def obtener_metodos_pago(db):
+#     """
+#     Obtiene los métodos de pago disponibles en la base de datos.
+#
+#     Args:
+#         db (Session): La sesión de la base de datos.
+#
+#     Returns:
+#         list: Una lista de cadenas con los métodos de pago disponibles.
+#     """
+#     metodos_pago = db.query(MetodoPago).all()
+#     return [f"{metodo_pago.clave} - {metodo_pago.descripcion}" for metodo_pago in metodos_pago]
 
-    Args:
-        db (Session): La sesión de la base de datos.
-
-    Returns:
-        list: Una lista de cadenas con los métodos de pago disponibles.
-    """
-    metodos_pago = db.query(MetodoPago).all()
-    return [f"{metodo_pago.clave} - {metodo_pago.descripcion}" for metodo_pago in metodos_pago]
-
-def obtener_formas_pago(db):
-    """
-    Obtiene las formas de pago disponibles en la base de datos.
-
-    Args:
-        db (Session): La sesión de la base de datos.
-
-    Returns:
-        list: Una lista de cadenas con las formas de pago disponibles.
-    """
-    formas_pago = db.query(FormaPago).all()
-    return [f"{forma_pago.clave} - {forma_pago.descripcion}" for forma_pago in formas_pago]
+# def obtener_formas_pago(db):
+#     """
+#     Obtiene las formas de pago disponibles en la base de datos.
+#
+#     Args:
+#         db (Session): La sesión de la base de datos.
+#
+#     Returns:
+#         list: Una lista de cadenas con las formas de pago disponibles.
+#     """
+#     formas_pago = db.query(FormaPago).all()
+#     return [f"{forma_pago.clave} - {forma_pago.descripcion}" for forma_pago in formas_pago]
 
 def obtener_banco(db):
     """
@@ -233,11 +233,11 @@ def crear_recibo(db, datos_recibo):
         Recibo: El objeto de recibo creado.
     """
     empleado = obtener_empleado(db, datos_recibo['numero_empleado'])
-    clave_tipo_comprobante, _ = datos_recibo['tipo_comprobante_clave'].split(" - ")
-    clave_uso_destino_cfdi, _ = datos_recibo['uso_destino_cfdi_clave'].split(" - ")
+    # clave_tipo_comprobante, _ = datos_recibo['tipo_comprobante_clave'].split(" - ")
+    # clave_uso_destino_cfdi, _ = datos_recibo['uso_destino_cfdi_clave'].split(" - ")
     clave_regimen_laboral, _ = datos_recibo['regimen_laboral_clave'].split(" - ")
-    clave_metodo_pago, _ = datos_recibo['metodo_pago_clave'].split(" - ")
-    clave_forma_pago, _ = datos_recibo['forma_pago_clave'].split(" - ")
+    # clave_metodo_pago, _ = datos_recibo['metodo_pago_clave'].split(" - ")
+    # clave_forma_pago, _ = datos_recibo['forma_pago_clave'].split(" - ")
     clave_banco, _ = datos_recibo['banco_clave'].split(" - ")
     clave_percepcion, _ = datos_recibo['percepcion_clave'].split(" - ")
     clave_deduccion, _ = datos_recibo['deduccion_clave'].split(" - ")
@@ -245,10 +245,10 @@ def crear_recibo(db, datos_recibo):
 
 
     recibo = Recibo(
-        uso_destino_cfdi_clave=clave_uso_destino_cfdi,
+        # uso_destino_cfdi_clave=clave_uso_destino_cfdi,
         fecha_expedicion = datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
         fecha_pago = datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
-        tipo_comprobante_clave=clave_tipo_comprobante,
+        # tipo_comprobante_clave=clave_tipo_comprobante,
         regimen_laboral_clave=clave_regimen_laboral,
         numero_empleado=empleado.numero_empleado,
         curp=empleado.curp,
@@ -261,8 +261,8 @@ def crear_recibo(db, datos_recibo):
         tipo_jornada=empleado.tipo_jornada,
         tipo_contrato=empleado.tipo_contrato,
         periodicidad_pago=empleado.periodicidad_pago,
-        metodo_pago_clave=clave_metodo_pago,
-        forma_pago_clave=clave_forma_pago,
+        # metodo_pago_clave=clave_metodo_pago,
+        # forma_pago_clave=clave_forma_pago,
         banco_clave=clave_banco,
         clave_percepcion=clave_percepcion,
         valor_percepciones=datos_recibo['valor_percepciones'],

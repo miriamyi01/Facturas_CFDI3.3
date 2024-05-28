@@ -83,6 +83,30 @@ def obtener_datos(session, id_factura):
             "codigo_qr": convert_qr_code(factura.codigo_qr),
         }
 
+class PDF(FPDF):
+    def header(self):
+        # Margen superior en azul
+        self.set_fill_color(0, 0, 255)
+        self.rect(0, 0, 210, 15, 'F')
+
+    def footer(self):
+        # Margen inferior en azul
+        self.set_y(-15)
+        self.set_fill_color(0, 0, 255)
+        self.rect(0, 285, 210, 15, 'F')
+
+    def chapter_title(self, title):
+        # Título de capítulo
+        self.set_font('Arial', 'B', 12)
+        self.cell(0, 10, title, 0, 1, 'L')
+        self.ln(4)
+
+    def chapter_body(self, body):
+        # Cuerpo del capítulo
+        self.set_font('Arial', '', 10)
+        self.multi_cell(0, 10, body)
+        self.ln()
+
 def generar_pdf(datos):
     """
     Genera un archivo PDF con los datos de la factura.
@@ -93,39 +117,91 @@ def generar_pdf(datos):
     Returns:
         bytes: Los bytes del archivo PDF generado.
     """
-    pdf = FPDF()
+    pdf = PDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=12)
+    pdf.set_left_margin(10)
+    pdf.set_right_margin(10)
 
-    # Diccionario de mapeo para los textos específicos
-    mapeo_texto = {
-        "nombre_empresa": "Empresa",
-        "uso_destino_cfdi_clave": "Clave Uso CFDI",
-        "uso_destino_cfdi_descripcion": "Descripción Uso CFDI",
-    }
+    # Encabezado - Datos del Emisor
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, datos['nombre_empresa'], 0, 1, 'C')
+    pdf.set_font("Arial", size=10)
+    pdf.cell(0, 10, f"RFC: {datos['rfc_emisor']}", 0, 1, 'C')
+    pdf.cell(0, 10, f"Régimen Fiscal: {datos['regimen_fiscal_clave']} - {datos['regimen_fiscal_descripcion']}", 0, 1, 'C')
+    pdf.ln(10)
 
-    for key, value in datos.items():
-        if key == 'codigo_qr':
-            # Convertir la imagen PIL a bytes
-            img_byte_arr = io.BytesIO()
-            value.save(img_byte_arr, format='PNG')
-            img_byte_arr = img_byte_arr.getvalue()
+    # Primera columna
+    pdf.set_font("Arial", 'B', 10)
+    pdf.cell(95, 10, 'Datos del Receptor', 0, 0, 'L')
+    pdf.cell(95, 10, 'Detalles de la Factura', 0, 1, 'L')
+    
+    pdf.set_font("Arial", size=10)
+    pdf.cell(95, 10, f"RFC: {datos['rfc_receptor']}", 0, 0, 'L')
+    pdf.cell(95, 10, f"Tipo de Comprobante: {datos['tipo_comprobante_clave']} - {datos['tipo_comprobante_descripcion']}", 0, 1, 'L')
+    
+    pdf.cell(95, 10, '', 0, 0, 'L')
+    pdf.cell(95, 10, f"Uso de CFDI: {datos['uso_destino_cfdi_clave']} - {datos['uso_destino_cfdi_descripcion']}", 0, 1, 'L')
 
-            # Guardar los bytes de la imagen en un archivo temporal
-            with open('temp.png', 'wb') as f:
-                f.write(img_byte_arr)
+    pdf.cell(95, 10, '', 0, 0, 'L')
+    pdf.cell(95, 10, f"Fecha de Expedición: {datos['fecha_expedicion']}", 0, 1, 'L')
+    
+    pdf.cell(95, 10, '', 0, 0, 'L')
+    pdf.cell(95, 10, f"Lugar de Expedición: {datos['lugar_expedicion']}", 0, 1, 'L')
 
-            # Agregar la imagen al PDF
-            pdf.image('temp.png', w=20, h=20)
-        else:
-            # Encabezado - Nombre y logotipo
+    pdf.cell(95, 10, '', 0, 0, 'L')
+    pdf.cell(95, 10, f"Forma de Pago: {datos['forma_pago_clave']} - {datos['forma_pago_descripcion']}", 0, 1, 'L')
 
-            # Cuerpo - Datos
+    pdf.cell(95, 10, '', 0, 0, 'L')
+    pdf.cell(95, 10, f"Método de Pago: {datos['metodo_pago_clave']} - {datos['metodo_pago_descripcion']}", 0, 1, 'L')
 
-            # Final - Sellos
-            texto_completo = f"{mapeo_texto[key]}: {value}"
-            pdf.cell(200, 10, txt=texto_completo, ln=True)
+    pdf.cell(95, 10, '', 0, 0, 'L')
+    pdf.cell(95, 10, f"Moneda: {datos['moneda']} - Tipo de Cambio: {datos['tipo_cambio']}", 0, 1, 'L')
+    pdf.ln(10)
 
+    # Segunda columna
+    pdf.set_font("Arial", 'B', 10)
+    pdf.cell(0, 10, 'Conceptos', 0, 1, 'L')
+    
+    pdf.set_font("Arial", size=10)
+    pdf.cell(0, 10, f"Clave Producto/Servicio: {datos['clave_producto_servicio']}", 0, 1, 'L')
+    pdf.cell(0, 10, f"Descripción: {datos['descripcion_producto_servicio']}", 0, 1, 'L')
+    pdf.cell(0, 10, f"Cantidad: {datos['cantidad']}", 0, 1, 'L')
+    pdf.cell(0, 10, f"Importe: {datos['importe']}", 0, 1, 'L')
+    pdf.ln(10)
+
+    # Totales
+    pdf.set_font("Arial", 'B', 10)
+    pdf.cell(0, 10, 'Totales', 0, 1, 'L')
+    
+    pdf.set_font("Arial", size=10)
+    pdf.cell(0, 10, f"Subtotal: {datos['subtotal']}", 0, 1, 'L')
+    pdf.cell(0, 10, f"IVA: {datos['iva']}", 0, 1, 'L')
+    pdf.cell(0, 10, f"Total: {datos['total']}", 0, 1, 'L')
+    pdf.cell(0, 10, f"Total con letra: {datos['total_con_letra']}", 0, 1, 'L')
+    pdf.ln(10)
+
+    # Sellos digitales
+    pdf.set_font("Arial", 'B', 10)
+    pdf.cell(0, 10, 'Sellos Digitales', 0, 1, 'L')
+    
+    pdf.set_font("Arial", size=10)
+    pdf.multi_cell(0, 10, f"Sello Digital del CFDI:\n{datos['sello_digital_cfdi']}", 0, 1, 'L')
+    pdf.multi_cell(0, 10, f"Sello Digital del SAT:\n{datos['sello_digital_sat']}", 0, 1, 'L')
+    pdf.multi_cell(0, 10, f"Cadena Original del Complemento de Certificación:\n{datos['cadena_original_complemento_certificacion']}", 0, 1, 'L')
+
+    # Segunda hoja para el código QR
+    '''
+    pdf.add_page()
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, 'Código QR', 0, 1, 'C')
+    if datos['codigo_qr']:
+        img_byte_arr = io.BytesIO()
+        datos['codigo_qr'].save(img_byte_arr, format='PNG')
+        img_byte_arr = img_byte_arr.getvalue()
+        with open('/mnt/data/temp.png', 'wb') as f:
+            f.write(img_byte_arr)
+        pdf.image('/mnt/data/temp.png', x=60, y=60, w=90, h=90)
+    '''
     return pdf.output(dest='S').encode('latin1')
 
 def guardar_factura_pdf(session, id_factura, pdf_bytes):
@@ -140,11 +216,12 @@ def guardar_factura_pdf(session, id_factura, pdf_bytes):
     Returns:
         None
     """
+
     # Crear un nuevo objeto FacturaPDF
     factura_pdf = FacturaPDF(id_factura=id_factura, pdf=pdf_bytes)
-
+    
     # Agregar el objeto FacturaPDF a la sesión
     session.add(factura_pdf)
-
+    
     # Guardar los cambios en la base de datos
     session.commit()

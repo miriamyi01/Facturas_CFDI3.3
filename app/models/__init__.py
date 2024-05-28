@@ -27,12 +27,12 @@ from .factura import (
 
 # Importamos la clase Empleado del módulo empleado
 # Esta clase se utiliza para representar a un empleado en nuestra aplicación.
-from .empleado import Empleado (
-    Puesto
-    Departamento
-    Riesgo
-    Jornada
-    Contrato
+from .empleado import (
+    Puesto,
+    Departamento,
+    Riesgo,
+    Jornada,
+    Contrato,
     Periodicidad
 )
 
@@ -41,11 +41,11 @@ from .empleado import Empleado (
 from .recibo import (
     Recibo,  # Clase para representar un recibo
     Empleado,  # Clase para representar un empleado en un recibo
-    UsoDestinoCfdi,  # Clase para representar el uso o destino de un CFDI en un recibo
-    TipoComprobante,  # Clase para representar el tipo de comprobante de un recibo
+    # UsoDestinoCfdi,  # Clase para representar el uso o destino de un CFDI en un recibo
+    # TipoComprobante,  # Clase para representar el tipo de comprobante de un recibo
     RegimenLaboral,  # Clase para representar el régimen laboral en un recibo
-    MetodoPago,  # Clase para representar el método de pago de un recibo
-    FormaPago,  # Clase para representar la forma de pago de un recibo
+    # MetodoPago,  # Clase para representar el método de pago de un recibo
+    # FormaPago,  # Clase para representar la forma de pago de un recibo
     Banco,  # Clase para representar el banco en un recibo
     Percepcion,  # Clase para representar una percepción en un recibo
     Deduccion,  # Clase para representar una deducción en un recibo

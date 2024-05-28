@@ -33,28 +33,28 @@ class Empleado(Base):
     recibos_nomina = relationship("ReciboNomina", back_populates="empleado")  # Relación con la tabla ReciboNomina: un empleado puede tener múltiples recibos de nómina
 
 
-class UsoDestinoCfdi(Base):
-    """
-    Clase para representar el uso o destino de un CFDI en una factura.
-    """
-    __tablename__ = 'uso_destino_cfdi'
-    
-    clave = Column(Integer, primary_key=True)  # Clave única del uso o destino CFDI
-    descripcion = Column(String(255), nullable=False)  # Descripción del uso o destino CFDI
-    
-    recibos_nomina = relationship("ReciboNomina", back_populates="uso_destino_cfdi")  # Relación con la tabla ReciboNomina: un uso o destino CFDI puede estar asociado a múltiples recibos de nómina
-
-
-class TipoComprobante(Base):
-    """
-    Clase para representar el tipo de comprobante de un recibo de nómina.
-    """
-    __tablename__ = 'tipo_comprobante'
-    
-    clave = Column(Integer, primary_key=True)  # Clave única del tipo de comprobante
-    descripcion = Column(String(255), nullable=False)  # Descripción del tipo de comprobante
-    
-    recibos_nomina = relationship("ReciboNomina", back_populates="tipo_comprobante")  # Relación con la tabla ReciboNomina: un tipo de comprobante puede estar asociado a múltiples recibos de nómina
+# class UsoDestinoCfdi(Base):
+#     """
+#     Clase para representar el uso o destino de un CFDI en una factura.
+#     """
+#     __tablename__ = 'uso_destino_cfdi'
+#     
+#     clave = Column(Integer, primary_key=True)  # Clave única del uso o destino CFDI
+#     descripcion = Column(String(255), nullable=False)  # Descripción del uso o destino CFDI
+#     
+#     recibos_nomina = relationship("ReciboNomina", back_populates="uso_destino_cfdi")  # Relación con la tabla ReciboNomina: un uso o destino CFDI puede estar asociado a múltiples recibos de nómina
+# 
+# 
+# class TipoComprobante(Base):
+#     """
+#     Clase para representar el tipo de comprobante de un recibo de nómina.
+#     """
+#     __tablename__ = 'tipo_comprobante'
+#     
+#     clave = Column(Integer, primary_key=True)  # Clave única del tipo de comprobante
+#     descripcion = Column(String(255), nullable=False)  # Descripción del tipo de comprobante
+#     
+#     recibos_nomina = relationship("ReciboNomina", back_populates="tipo_comprobante")  # Relación con la tabla ReciboNomina: un tipo de comprobante puede estar asociado a múltiples recibos de nómina
 
 
 class RegimenLaboral(Base):
@@ -69,28 +69,28 @@ class RegimenLaboral(Base):
     recibos_nomina = relationship("ReciboNomina", back_populates="regimen_laboral")  # Relación con la tabla ReciboNomina: un régimen laboral puede estar asociado a múltiples recibos de nómina
 
 
-class MetodoPago(Base):
-    """
-    Clase para representar los métodos de pago que pueden ser utilizados en un recibo de nómina.
-    """
-    __tablename__ = 'metodos_pago'
-
-    clave = Column(String(3), primary_key=True, unique=True, nullable=False)  # Clave única del método de pago
-    descripcion = Column(String(255), nullable=False)  # Descripción del método de pago
-    
-    recibos_nomina = relationship("ReciboNomina", back_populates="metodo_pago")  # Relación con la tabla ReciboNomina: un método de pago puede estar asociado a múltiples recibos de nómina
-
-
-class FormaPago(Base):
-    """
-    Clase para representar las formas de pago que pueden ser utilizadas en un recibo de nómina.
-    """
-    __tablename__ = 'formas_pago'
-
-    clave = Column(String(2), primary_key=True, unique=True, nullable=False)  # Clave única de la forma de pago
-    descripcion = Column(String(255), nullable=False)  # Descripción de la forma de pago
-    
-    recibos_nomina = relationship("ReciboNomina", back_populates="forma_pago")  # Relación con la tabla ReciboNomina: una forma de pago puede estar asociada a múltiples recibos de nómina
+# class MetodoPago(Base):
+#     """
+#     Clase para representar los métodos de pago que pueden ser utilizados en un recibo de nómina.
+#     """
+#     __tablename__ = 'metodos_pago'
+# 
+#     clave = Column(String(3), primary_key=True, unique=True, nullable=False)  # Clave única del método de pago
+#     descripcion = Column(String(255), nullable=False)  # Descripción del método de pago
+#     
+#     recibos_nomina = relationship("ReciboNomina", back_populates="metodo_pago")  # Relación con la tabla ReciboNomina: un método de pago puede estar asociado a múltiples recibos de nómina
+# 
+# 
+# class FormaPago(Base):
+#     """
+#     Clase para representar las formas de pago que pueden ser utilizadas en un recibo de nómina.
+#     """
+#     __tablename__ = 'formas_pago'
+# 
+#     clave = Column(String(2), primary_key=True, unique=True, nullable=False)  # Clave única de la forma de pago
+#     descripcion = Column(String(255), nullable=False)  # Descripción de la forma de pago
+#     
+#     recibos_nomina = relationship("ReciboNomina", back_populates="forma_pago")  # Relación con la tabla ReciboNomina: una forma de pago puede estar asociada a múltiples recibos de nómina
 
 
 class Banco(Base):
@@ -153,16 +153,16 @@ class Recibo(Base):
     
         id = Column(Integer, primary_key=True)  # Identificador único para cada recibo
         nombre_empresa = Column(String(50), default='FARMACIAS DE DIOS', nullable=False)  # Nombre de la empresa
-        uso_destino_cfdi_clave = Column(Integer, ForeignKey('uso_destino_cfdi.clave'), nullable=False)  # Clave del uso o destino CFDI
+        # uso_destino_cfdi_clave = Column(Integer, ForeignKey('uso_destino_cfdi.clave'), nullable=False)  # Clave del uso o destino CFDI
         lugar_expedicion = Column(String(20), default='CIUDAD DE MÉXICO', nullable=False)  # Lugar de expedición de la factura
         fecha_expedicion = Column(DateTime, nullable=False)  # Fecha de expedición de la factura    
         rfc_emisor = Column(String(20), default='FARA2402035H8', nullable=False)  # RFC del emisor
-        tipo_comprobante_clave = Column(Integer, ForeignKey('tipo_comprobante.clave'), nullable=False)  # Clave del tipo de comprobante
+        # tipo_comprobante_clave = Column(Integer, ForeignKey('tipo_comprobante.clave'), nullable=False)  # Clave del tipo de comprobante
         regimen_laboral_clave = Column(Integer, ForeignKey('regimen_laboral.clave'), nullable=False)  # Clave del régimen laboral
         empleado = Column(String(10), ForeignKey('empleados.numero_empleado'), nullable=False)  # Numero de empleado
         fecha_pago = Column(DateTime, nullable=False)  # Fecha de pago
-        metodo_pago_clave = Column(Integer, ForeignKey('metodos_pago.clave'), nullable=False)  # Clave del método de pago
-        forma_pago_clave = Column(Integer, ForeignKey('formas_pago.clave'), nullable=False)  # Clave de la forma de pago
+        # metodo_pago_clave = Column(Integer, ForeignKey('metodos_pago.clave'), nullable=False)  # Clave del método de pago
+        # forma_pago_clave = Column(Integer, ForeignKey('formas_pago.clave'), nullable=False)  # Clave de la forma de pago
         banco_clave = Column(String(2), ForeignKey('banco.clave'))  # Clave del banco
         percepciones_recibo = Column(String(3), ForeignKey('percepciones.clave'), nullable=False)  # Percepciones
         valor_percepciones = Column(Float, nullable=False)  # Valor de percepciones
@@ -181,11 +181,11 @@ class Recibo(Base):
     
         # Relaciones con otras tablas
         empleado = relationship("Empleado", back_populates="recibos_nomina")
-        uso_destino_cfdi = relationship("UsoDestinoCfdi", back_populates="recibos_nomina")
-        tipo_comprobante = relationship("TipoComprobante", back_populates="recibos_nomina")
+        # uso_destino_cfdi = relationship("UsoDestinoCfdi", back_populates="recibos_nomina")
+        # tipo_comprobante = relationship("TipoComprobante", back_populates="recibos_nomina")
         regimen_laboral = relationship("RegimenLaboral", back_populates="recibos_nomina")
-        metodo_pago = relationship("MetodoPago", back_populates="recibos_nomina")
-        forma_pago = relationship("FormaPago", back_populates="recibos_nomina")
+        # metodo_pago = relationship("MetodoPago", back_populates="recibos_nomina")
+        # forma_pago = relationship("FormaPago", back_populates="recibos_nomina")
         banco = relationship("Banco", back_populates="recibos_nomina")
         percepciones = relationship("Percepciones", back_populates="recibos_nomina")
         deducciones = relationship("Deducciones", back_populates="recibos_nomina")
