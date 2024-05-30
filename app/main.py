@@ -281,54 +281,52 @@ def generar_factura():
             'precio_unitario': precio_unitario
         })
 
-        col1, col2 = st.columns([8, 2.5])
-        with col2:
-            # Si el usuario hace clic en el botón "Generar Factura"
-            if st.button("✅ Generar Factura"):
+        # Si el usuario hace clic en el botón "Generar Factura"
+        if st.button("✅ Generar Factura"):
 
-                # Agregar los datos de la factura a la base de datos
-                factura = crear_factura(db, {
-                    'uso_destino_cfdi_clave': uso_destino_cfdi,
-                    'tipo_comprobante_clave': tipo_comprobante_clave,
-                    'regimen_fiscal_clave': regimen_fiscal_clave,
-                    'rfc_receptor': rfc_receptor,
-                    'clave_producto_servicio': clave_producto_servicio,
-                    'cantidad': cantidad,
-                    'metodo_pago_clave': metodo_pago_clave,
-                    'forma_pago_clave': forma_pago_clave,
-                    'precio_unitario': precio_unitario,
-                    'importe': valores_factura['importe'],
-                    'subtotal': valores_factura['subtotal'],
-                    'iva': valores_factura['iva'],
-                    'total': valores_factura['total']
-                })
-                # Si la generación de la factura fue exitosa
-                if factura:
-                    id_factura = factura.id
-                    datos_factura = obtener_datos(db, id_factura)
-                        
-                    pdf_bytes = generar_pdf(datos_factura)
-                    guardar_factura_pdf(db, id_factura, pdf_bytes)
+            # Agregar los datos de la factura a la base de datos
+            factura = crear_factura(db, {
+                'uso_destino_cfdi_clave': uso_destino_cfdi,
+                'tipo_comprobante_clave': tipo_comprobante_clave,
+                'regimen_fiscal_clave': regimen_fiscal_clave,
+                'rfc_receptor': rfc_receptor,
+                'clave_producto_servicio': clave_producto_servicio,
+                'cantidad': cantidad,
+                'metodo_pago_clave': metodo_pago_clave,
+                'forma_pago_clave': forma_pago_clave,
+                'precio_unitario': precio_unitario,
+                'importe': valores_factura['importe'],
+                'subtotal': valores_factura['subtotal'],
+                'iva': valores_factura['iva'],
+                'total': valores_factura['total']
+            })
+            # Si la generación de la factura fue exitosa
+            if factura:
+                id_factura = factura.id
+                datos_factura = obtener_datos(db, id_factura)
                     
-                    col1, col2 = st.columns([3, 1])
-                    with col1:
-                        # Mostrar un mensaje de éxito
-                        st.success("Factura generada con éxito")
+                pdf_bytes = generar_pdf(datos_factura)
+                guardar_factura_pdf(db, id_factura, pdf_bytes)
                     
-                    with col2:
-                        st.download_button('⬇️ Descargar PDF', pdf_bytes, file_name='Factura.pdf', mime='application/pdf')
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    # Mostrar un mensaje de éxito
+                    st.success("Factura generada con éxito")
+                    
+                with col2:
+                    st.download_button('⬇️ Descargar PDF', pdf_bytes, file_name='Factura.pdf', mime='application/pdf')
 
-                    # Borrar los campos de entrada
-                    uso_destino_cfdi_placeholder.empty()
-                    tipo_comprobante_clave_placeholder.empty()
-                    regimen_fiscal_clave_placeholder.empty()
-                    clave_producto_servicio_placeholder.empty()
-                    cantidad_placeholder.empty()
-                    metodo_pago_clave_placeholder.empty()
-                    forma_pago_clave_placeholder.empty()
-                else:
-                    # Si la generación de la factura falló, mostrar un mensaje de error
-                    st.error("Error al generar la factura")
+                # Borrar los campos de entrada
+                uso_destino_cfdi_placeholder.empty()
+                tipo_comprobante_clave_placeholder.empty()
+                regimen_fiscal_clave_placeholder.empty()
+                clave_producto_servicio_placeholder.empty()
+                cantidad_placeholder.empty()
+                metodo_pago_clave_placeholder.empty()
+                forma_pago_clave_placeholder.empty()
+            else:
+                # Si la generación de la factura falló, mostrar un mensaje de error
+                st.error("Error al generar la factura")
 
 # Si el script se ejecuta como el script principal, llamar a la función main
 if __name__ == "__main__":

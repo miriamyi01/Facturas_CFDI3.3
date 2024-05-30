@@ -83,17 +83,107 @@ def obtener_datos(session, id_factura):
             "codigo_qr": convert_qr_code(factura.codigo_qr),
         }
 
+from fpdf import FPDF
+from models import Factura, FacturaPDF
+from sqlalchemy.orm import joinedload
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from contextlib import contextmanager
+from PIL import Image
+import io
+from io import BytesIO
+
+# Crear un motor de base de datos
+engine = create_engine('postgresql://postgres:minora0811@localhost/cfdi_facturas')
+
+# Crear una fábrica de sesiones
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Este es un administrador de contexto que se utiliza para manejar las sesiones de base de datos
+@contextmanager
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+def obtener_datos(session, id_factura):
+    """
+    Obtiene los datos de una factura de la base de datos.
+
+    Args:
+        session (Session): La sesión de la base de datos.
+        id_factura (int): El ID de la factura.
+
+    Returns:
+        dict: Un diccionario con los datos de la factura.
+    """
+    factura = session.query(Factura).options(joinedload('*')).filter(Factura.id == id_factura).first()
+
+    if factura:
+        def convert_qr_code(qr_bytes):
+            if qr_bytes is not None:
+                return Image.open(BytesIO(qr_bytes))
+
+        return {
+            "nombre_empresa": factura.nombre_empresa,
+            "uso_destino_cfdi_clave": factura.uso_destino_cfdi.clave,
+            "uso_destino_cfdi_descripcion": factura.uso_destino_cfdi.descripcion,
+            "lugar_expedicion": factura.lugar_expedicion,
+            "fecha_expedicion": factura.fecha_expedicion,
+            "rfc_emisor": factura.rfc_emisor,
+            "tipo_comprobante_clave": factura.tipo_comprobante.clave,
+            "tipo_comprobante_descripcion": factura.tipo_comprobante.descripcion,
+            "regimen_fiscal_clave": factura.regimen_fiscal.clave,
+            "regimen_fiscal_descripcion": factura.regimen_fiscal.descripcion,
+            "rfc_receptor": factura.rfc_receptor,
+            "clave_producto_servicio": factura.producto_servicio.clave_producto_servicio,
+            "descripcion_producto_servicio": factura.producto_servicio.descripcion,
+            "cantidad": factura.cantidad,
+            "importe": factura.importe,
+            "subtotal": factura.subtotal,
+            "iva": factura.iva,
+            "total": factura.total,
+            "total_con_letra": factura.total_con_letra,
+            "moneda": factura.moneda,
+            "tipo_cambio": factura.tipo_cambio,
+            "metodo_pago_clave": factura.metodo_pago.clave,
+            "metodo_pago_descripcion": factura.metodo_pago.descripcion,
+            "forma_pago_clave": factura.forma_pago.clave,
+            "forma_pago_descripcion": factura.forma_pago.descripcion,
+            "sello_digital_cfdi": factura.sello_digital_cfdi,
+            "sello_digital_sat": factura.sello_digital_sat,
+            "cadena_original_complemento_certificacion": factura.cadena_original_complemento_certificacion,
+            "codigo_qr": convert_qr_code(factura.codigo_qr),
+        }
+
 class PDF(FPDF):
     def header(self):
-        # Margen superior en azul
-        self.set_fill_color(0, 0, 255)
-        self.rect(0, 0, 210, 15, 'F')
+        # Margen superior en azul claro
+        self.set_line_width(0.5)
+        self.set_draw_color(173, 216, 230)  # Azul claro
+        self.line(10, 10, 200, 10)  # Línea superior
 
     def footer(self):
-        # Margen inferior en azul
-        self.set_y(-15)
-        self.set_fill_color(0, 0, 255)
-        self.rect(0, 285, 210, 15, 'F')
+        # Margen inferior en azul claro
+        self.set_y(-10)
+        self.set_line_width(0.5)
+        self.set_draw_color(173, 216, 230)  # Azul claro
+        self.line(10, 287, 200, 287)  # Línea inferior
+
+    def draw_borders(self):
+        # Bordes izquierdo y derecho en azul claro
+        self.set_line_width(0.5)
+        self.set_draw_color(173, 216, 230)  # Azul claro
+        self.line(10, 10, 10, 287)  # Línea izquierda
+        self.line(200, 10, 200, 287)  # Línea derecha
+
+    def draw_title_border(self, x, y, w, h):
+        # Dibujar un rectángulo alrededor del título
+        self.set_line_width(0.5)
+        self.set_draw_color(173, 216, 230)  # Azul claro
+        self.rect(x, y, w, h)
 
     def chapter_title(self, title):
         # Título de capítulo
@@ -121,6 +211,7 @@ def generar_pdf(datos):
     pdf.add_page()
     pdf.set_left_margin(10)
     pdf.set_right_margin(10)
+    pdf.draw_borders()
 
     # Encabezado - Datos del Emisor
     pdf.set_font("Arial", 'B', 12)
@@ -130,9 +221,11 @@ def generar_pdf(datos):
     pdf.cell(0, 10, f"Régimen Fiscal: {datos['regimen_fiscal_clave']} - {datos['regimen_fiscal_descripcion']}", 0, 1, 'C')
     pdf.ln(10)
 
-    # Primera columna
+    # Títulos con bordes
     pdf.set_font("Arial", 'B', 10)
+    pdf.draw_title_border(10, pdf.get_y(), 95, 10)
     pdf.cell(95, 10, 'Datos del Receptor', 0, 0, 'L')
+    pdf.draw_title_border(105, pdf.get_y(), 95, 10)
     pdf.cell(95, 10, 'Detalles de la Factura', 0, 1, 'L')
     
     pdf.set_font("Arial", size=10)
@@ -158,30 +251,27 @@ def generar_pdf(datos):
     pdf.cell(95, 10, f"Moneda: {datos['moneda']} - Tipo de Cambio: {datos['tipo_cambio']}", 0, 1, 'L')
     pdf.ln(10)
 
-    # Segunda columna
+    # Conceptos y Totales en columnas
     pdf.set_font("Arial", 'B', 10)
-    pdf.cell(0, 10, 'Conceptos', 0, 1, 'L')
+    pdf.draw_title_border(10, pdf.get_y(), 95, 10)
+    pdf.cell(95, 10, 'Conceptos', 0, 0, 'L')
+    pdf.draw_title_border(105, pdf.get_y(), 95, 10)
+    pdf.cell(95, 10, 'Totales', 0, 1, 'L')
     
     pdf.set_font("Arial", size=10)
-    pdf.cell(0, 10, f"Clave Producto/Servicio: {datos['clave_producto_servicio']}", 0, 1, 'L')
-    pdf.cell(0, 10, f"Descripción: {datos['descripcion_producto_servicio']}", 0, 1, 'L')
-    pdf.cell(0, 10, f"Cantidad: {datos['cantidad']}", 0, 1, 'L')
-    pdf.cell(0, 10, f"Importe: {datos['importe']}", 0, 1, 'L')
-    pdf.ln(10)
-
-    # Totales
-    pdf.set_font("Arial", 'B', 10)
-    pdf.cell(0, 10, 'Totales', 0, 1, 'L')
-    
-    pdf.set_font("Arial", size=10)
-    pdf.cell(0, 10, f"Subtotal: {datos['subtotal']}", 0, 1, 'L')
-    pdf.cell(0, 10, f"IVA: {datos['iva']}", 0, 1, 'L')
-    pdf.cell(0, 10, f"Total: {datos['total']}", 0, 1, 'L')
-    pdf.cell(0, 10, f"Total con letra: {datos['total_con_letra']}", 0, 1, 'L')
+    pdf.cell(95, 10, f"Clave Producto/Servicio: {datos['clave_producto_servicio']}", 0, 0, 'L')
+    pdf.cell(95, 10, f"Subtotal: {datos['subtotal']}", 0, 1, 'L')
+    pdf.cell(95, 10, f"Descripción: {datos['descripcion_producto_servicio']}", 0, 0, 'L')
+    pdf.cell(95, 10, f"IVA: {datos['iva']}", 0, 1, 'L')
+    pdf.cell(95, 10, f"Cantidad: {datos['cantidad']}", 0, 0, 'L')
+    pdf.cell(95, 10, f"Total: {datos['total']}", 0, 1, 'L')
+    pdf.cell(95, 10, f"Importe: {datos['importe']}", 0, 0, 'L')
+    pdf.cell(95, 10, f"Total con letra: {datos['total_con_letra']}", 0, 1, 'L')
     pdf.ln(10)
 
     # Sellos digitales
     pdf.set_font("Arial", 'B', 10)
+    pdf.draw_title_border(10, pdf.get_y(), 190, 10)
     pdf.cell(0, 10, 'Sellos Digitales', 0, 1, 'L')
     
     pdf.set_font("Arial", size=10)
@@ -190,19 +280,20 @@ def generar_pdf(datos):
     pdf.multi_cell(0, 10, f"Cadena Original del Complemento de Certificación:\n{datos['cadena_original_complemento_certificacion']}", 0, 1, 'L')
 
     # Segunda hoja para el código QR
-    '''
     pdf.add_page()
+    pdf.draw_borders()
     pdf.set_font("Arial", 'B', 12)
     pdf.cell(0, 10, 'Código QR', 0, 1, 'C')
     if datos['codigo_qr']:
         img_byte_arr = io.BytesIO()
         datos['codigo_qr'].save(img_byte_arr, format='PNG')
         img_byte_arr = img_byte_arr.getvalue()
-        with open('/mnt/data/temp.png', 'wb') as f:
+        with open('temp.png', 'wb') as f:
             f.write(img_byte_arr)
-        pdf.image('/mnt/data/temp.png', x=60, y=60, w=90, h=90)
-    '''
+        pdf.image('temp.png', x=60, y=60, w=90, h=90)
+
     return pdf.output(dest='S').encode('latin1')
+
 
 def guardar_factura_pdf(session, id_factura, pdf_bytes):
     """
