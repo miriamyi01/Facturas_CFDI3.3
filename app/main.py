@@ -17,6 +17,12 @@ from services.factura_service import (
 )
 from utils.factura_pdf_util import generar_pdf, obtener_datos, guardar_factura_pdf
 
+import datetime
+# Obtén la fecha y hora actual
+now = datetime.datetime.now()
+# Formatea la fecha y hora en el formato "DD/MM/AA - HH:MM"
+formatted_now = now.strftime("%d.%m.%y-%H.%M")
+
 # Definir la función principal que se ejecutará cuando se inicie el script
 def main():
     """
@@ -281,9 +287,12 @@ def generar_factura():
             'precio_unitario': precio_unitario
         })
 
+        # Crea un marcador de posición para el botón "Generar Factura"
+        generar_factura_button_placeholder = st.empty()
+        
         # Si el usuario hace clic en el botón "Generar Factura"
-        if st.button("✅ Generar Factura"):
-
+        if generar_factura_button_placeholder.button("✅ Generar Factura"):
+        
             # Agregar los datos de la factura a la base de datos
             factura = crear_factura(db, {
                 'uso_destino_cfdi_clave': uso_destino_cfdi,
@@ -302,28 +311,47 @@ def generar_factura():
             })
             # Si la generación de la factura fue exitosa
             if factura:
+                # Vacía el marcador de posición del botón "Generar Factura"
+                generar_factura_button_placeholder.empty()
+        
                 id_factura = factura.id
                 datos_factura = obtener_datos(db, id_factura)
                     
                 pdf_bytes = generar_pdf(datos_factura)
                 guardar_factura_pdf(db, id_factura, pdf_bytes)
                     
-                col1, col2 = st.columns([3, 1])
+                col1, col2, col3 = st.columns([3, 1.5, 1.8])
                 with col1:
                     # Mostrar un mensaje de éxito
                     st.success("Factura generada con éxito")
                     
                 with col2:
-                    st.download_button('⬇️ Descargar PDF', pdf_bytes, file_name='Factura.pdf', mime='application/pdf')
-
-                # Borrar los campos de entrada
-                uso_destino_cfdi_placeholder.empty()
-                tipo_comprobante_clave_placeholder.empty()
-                regimen_fiscal_clave_placeholder.empty()
-                clave_producto_servicio_placeholder.empty()
-                cantidad_placeholder.empty()
-                metodo_pago_clave_placeholder.empty()
-                forma_pago_clave_placeholder.empty()
+                    # Usa el ID, la fecha y hora formateada en el nombre del archivo
+                    st.download_button('⬇️ Descargar PDF', pdf_bytes, file_name=f'Factura-{id_factura}-{formatted_now}.pdf', mime='application/pdf')
+        
+                with col3:
+                    # Borrar los campos de entrada
+                    uso_destino_cfdi_placeholder.empty()
+                    tipo_comprobante_clave_placeholder.empty()
+                    regimen_fiscal_clave_placeholder.empty()
+                    clave_producto_servicio_placeholder.empty()
+                    cantidad_placeholder.empty()
+                    metodo_pago_clave_placeholder.empty()
+                    forma_pago_clave_placeholder.empty()
+        
+                    # Agregar un botón "Generar otra factura"
+                    if st.button("🔄 Generar otra factura"):
+                        # Borrar los campos de entrada
+                        uso_destino_cfdi_placeholder.empty()
+                        tipo_comprobante_clave_placeholder.empty()
+                        regimen_fiscal_clave_placeholder.empty()
+                        clave_producto_servicio_placeholder.empty()
+                        cantidad_placeholder.empty()
+                        metodo_pago_clave_placeholder.empty()
+                        forma_pago_clave_placeholder.empty()
+        
+                        # Vuelve a mostrar el botón "Generar Factura"
+                        generar_factura_button_placeholder.button("✅ Generar Factura")
             else:
                 # Si la generación de la factura falló, mostrar un mensaje de error
                 st.error("Error al generar la factura")
