@@ -2,6 +2,8 @@
 import re
 import streamlit as st
 import time
+import altair as alt
+
 from services.auth_service import get_db, registrar_usuario, verificar_usuario, obtener_rfc
 from models import Usuario
 from services.factura_service import (
@@ -34,6 +36,14 @@ def main():
     Returns:
         None
     """
+
+    st.set_page_config(
+        page_title="Facturas CFDI 3.3",
+        page_icon="🧾",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+    alt.themes.enable("dark")
 
     # Encabezado
     with st.container():
